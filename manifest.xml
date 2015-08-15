@@ -1,0 +1,18 @@
+<package>
+  <description brief="sbpl_utils">
+
+     sbpl_utils
+
+  </description>
+  <author>Venkatraman Narayanan</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/sbpl_utils</url>
+  <export>
+    <cpp cflags="-I${prefix}/include -O3 -DROS" lflags="-Wl,-rpath,${prefix}/lib -L${prefix}/lib -lsbpl_utils"/>
+  </export>
+
+
+</package>
+
+
