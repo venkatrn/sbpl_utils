@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 #include <string>
 #include <stdexcept>
@@ -67,6 +68,9 @@ class HashManager {
   // Return the number of states in the hash manager.
   size_t Size() const;
 
+  // Print all states stored by the hash manager.
+  void Print() const;
+
   bool Exists(const HashableState &hashable_state) const;
   bool Exists(unsigned int state_id) const;
 
@@ -86,7 +90,6 @@ class HashManager {
 
   // Clear the hash manager.
   void Reset();
-
 
  private:
   struct HashFunction {
@@ -147,7 +150,7 @@ const HashableState &HashManager<HashableState>::GetState(
   if (it == state_id_to_state_.end()) {
     std::ostringstream ss;
     ss << "Asked for non-existent state ID: " <<  state_id << std::endl;
-    std::cerr << ss.str();
+    Print();
     throw std::runtime_error(ss.str());
   }
 
@@ -177,8 +180,8 @@ void HashManager<HashableState>::UpdateState(const HashableState
 
   if (it == state_to_state_id_.end()) {
     std::ostringstream ss;
-    ss << "Asked to update a non-existent state " << hashable_state << std::endl;
-    std::cerr << ss.str();
+    ss << "Asked to update a non-existent state " << std::endl << hashable_state << std::endl;
+    Print();
     throw std::runtime_error(ss.str());
   }
 
@@ -195,7 +198,23 @@ void HashManager<HashableState>::Reset() {
   state_to_state_id_.clear();
   state_id_to_state_.clear();
 }
+
+template<class HashableState>
+void HashManager<HashableState>::Print() const {
+  std::cout << std::right << std::setfill('*') 
+            << std::setw(50)<< "Begin Hash Table" << std::endl;
+
+  for (const auto &entry : state_to_state_id_) {
+    std::cout << "State ID: " << entry.second << std::endl;
+    std::cout << entry.first << std::endl;
+    std::cout << std::string(10, '-') << std::endl;
+  }
+
+  std::cout << std::right << std::setfill('*') 
+            << std::setw(50)<< "End Hash Table" << std::endl;
+}
 }  // namespace sbpl_utils
+
 
 
 
