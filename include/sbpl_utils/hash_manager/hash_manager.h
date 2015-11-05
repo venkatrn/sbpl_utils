@@ -133,9 +133,9 @@ unsigned int HashManager<HashableState>::GetStateID(const HashableState
 
   if (it == state_to_state_id_.end()) {
     std::ostringstream ss;
-    ss << "Asked for non-existent state " << hashable_state <<
+    ss << "Asked for non-existent state: " << std::endl << hashable_state <<
        std::endl;
-    std::cerr << ss.str();
+    Print();
     throw std::runtime_error(ss.str());
   }
 
