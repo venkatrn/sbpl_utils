@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 2.4.6)
-include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
+cmake_minimum_required(VERSION 2.8.3)
+project(sbpl_utils)
 
 # Set the build type.  Options are:
 #  Coverage       : w/ debug symbols, w/o optimization, w/ code-coverage
@@ -7,18 +7,21 @@ include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
 #  Release        : w/o debug symbols, w/ optimization
 #  RelWithDebInfo : w/ debug symbols, w/ optimization
 #  MinSizeRel     : w/o debug symbols, w/ optimization, stripped binaries
-set(ROS_BUILD_TYPE RelWithDebInfo)
+set(ROS_BUILD_TYPE Release)
 set(CMAKE_CXX_FLAGS "-std=c++0x")
 
-rosbuild_init()
+find_package(catkin REQUIRED)
+include_directories(${PROJECT_SOURCE_DIR}/include)
 
-#set the default path for built executables to the "bin" directory
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
-#set the default path for built libraries to the "lib" directory
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
+catkin_package(
+    DEPENDS
+    CATKIN_DEPENDS
+    INCLUDE_DIRS include
+    LIBRARIES ${PROJECT_NAME}
+)
 
 # common commands for building c++ executables and libraries
-rosbuild_add_library(${PROJECT_NAME} src/hash_manager/hash_manager.cpp)
+add_library(${PROJECT_NAME} src/hash_manager/hash_manager.cpp)
 
-rosbuild_add_gtest(tests/hash_manager_test tests/hash_manager_test.cpp examples/hashable_states.cpp)
-# target_link_libraries(tests/hash_manager_test ${PROJECT_NAME})
+catkin_add_gtest(hash_manager_test tests/hash_manager_test.cpp examples/hashable_states.cpp)
+target_link_libraries(hash_manager_test ${PROJECT_NAME})

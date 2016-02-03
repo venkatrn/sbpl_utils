@@ -1,0 +1,27 @@
+<package>
+  <name>sbpl_utils</name>
+  <version>1.0.0</version>
+  <description>sbpl_utils</description>
+  <maintainer email="venkatraman@cmu.edu">Venkatraman Narayanan</maintainer>
+
+  <license>BSD</license>
+
+  <url type="website">http://ros.org/wiki/sbpl_utils</url>
+  <!-- <url type="bugtracker"></url> -->
+
+  <author>Venkatraman Narayanan</author>
+
+  <!-- Dependencies which this package needs to build itself. -->
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <!-- Dependencies needed to compile this package. -->
+
+  <!-- Dependencies needed after this package is compiled. -->
+
+  <!-- Dependencies needed only for running tests. -->
+
+<export>
+    <cpp lflags="-Wl,-rpath,${prefix}/lib -L${prefix}/lib -lsbpl_utils" cflags="-I${prefix}/include -O3 -DROS"/>
+</export>
+
+</package>
