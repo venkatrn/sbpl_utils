@@ -11,17 +11,22 @@ set(ROS_BUILD_TYPE Release)
 set(CMAKE_CXX_FLAGS "-std=c++0x")
 
 find_package(catkin REQUIRED)
-include_directories(${PROJECT_SOURCE_DIR}/include)
+find_package(OpenCV REQUIRED)
+include_directories(${PROJECT_SOURCE_DIR}/include ${OpenCV_INCLUDE_DIRS})
 
 catkin_package(
     DEPENDS
+      OpenCV 
     CATKIN_DEPENDS
     INCLUDE_DIRS include
     LIBRARIES ${PROJECT_NAME}
 )
 
 # common commands for building c++ executables and libraries
-add_library(${PROJECT_NAME} src/hash_manager/hash_manager.cpp)
+add_library(${PROJECT_NAME} 
+            src/hash_manager/hash_manager.cpp
+            src/visualization/grid_visualizer.cpp)
+target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBRARIES})
 
 catkin_add_gtest(hash_manager_test tests/hash_manager_test.cpp examples/hashable_states.cpp)
 target_link_libraries(hash_manager_test ${PROJECT_NAME})
