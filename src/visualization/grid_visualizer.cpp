@@ -12,6 +12,7 @@ void GridVisualizer::SetGrid(const unsigned char *const *const grid_data, int he
 			grid_.at<unsigned char>(ii, jj) = grid_data[jj][ii];
 		}
 	}
+  cv::normalize(grid_, grid_, 0, 255, cv::NORM_MINMAX, CV_8UC1);
   cv::applyColorMap(grid_, colored_grid_, cv::COLORMAP_JET);
   stateful_grid_ = colored_grid_.clone();
 }
@@ -37,7 +38,8 @@ void GridVisualizer::DrawSpecialStates() {
     const int green = grid_item.green;
     const int blue = grid_item.blue;
     cv::Point center(x_coord, y_coord);
-    cv::Scalar color(red, green, blue);
+    // OpenCV has BGR order.
+    cv::Scalar color(blue, green, red);
     cv::circle(stateful_grid_, center, 5, color, -1);
     // stateful_grid_.at<cv::Vec3b>(y_coord, x_coord)[0] = red; 
     // stateful_grid_.at<cv::Vec3b>(y_coord, x_coord)[1] = green; 
