@@ -26,8 +26,11 @@ class GridVisualizer {
     GridVisualizer();
     void SetGrid(const std::vector<std::vector<char>> &grid_data);
     void SetGrid(const unsigned char *const * const grid_data, int height, int width);
+    void SetGrid(const char *const * const grid_data, int height, int width);
     void VisualizeState(int x_coord, int y_coord, int red = 127, int green = 127, int blue = 127);
+    void VisualizeLine(int x1, int y1, int x2, int y2, int red = 127, int green = 127, int blue = 127);
     void AddSpecialState(int x_coord, int y_coord, int red = 0, int green = 0, int blue = 0);
+    void Display(int delay);
     void ClearStates();
     
   private:
@@ -36,6 +39,8 @@ class GridVisualizer {
     cv::Mat stateful_grid_;
     int height_;
     int width_;
+    double scaling_factor_x_;
+    double scaling_factor_y_;
     std::vector<GridItem> special_states_;
 
     void DrawSpecialStates();
