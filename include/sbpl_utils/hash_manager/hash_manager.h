@@ -169,7 +169,7 @@ unsigned int HashManager<HashableState>::GetStateIDForceful(
 
   const int new_state_id = Size();
   state_to_state_id_[hashable_state] = new_state_id;
-  state_id_to_state_[new_state_id] = hashable_state;
+  state_id_to_state_.insert(std::make_pair(new_state_id, hashable_state));
   return new_state_id;
 }
 
