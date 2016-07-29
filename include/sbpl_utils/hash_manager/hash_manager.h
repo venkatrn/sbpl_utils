@@ -29,7 +29,8 @@ namespace sbpl_utils {
 // is not found in the hash manager.
 //
 // Other features include 'updating' a state while preserving its state ID, like in scenarios where we might update the
-// continuous coordinates while keeping the discrete coordinates fixed.
+// continuous coordinates while keeping the discrete coordinates fixed, or when
+// upating a state's g-value or best action when used on the planner side.
 //
 // Passive consumers (that won't add new states to the hash manager) can use a std::shared_ptr<const HashManager>
 // to access the mappings.
@@ -87,6 +88,11 @@ class HashManager {
   // If state does not already exist in the hash table, run time error is thrown.
   // Preserves the old state ID.
   void UpdateState(const HashableState &hashable_state);
+
+  // Allow users to insert states directly into the hasher if they know the
+  // state ID. This will throw if the hashable_state is already present in the
+  // hash manager.
+  void InsertState(const HashableState &hashable_state, int state_id);
 
   // Clear the hash manager.
   void Reset();
@@ -194,6 +200,21 @@ void HashManager<HashableState>::UpdateState(const HashableState
 }
 
 template<class HashableState>
+void HashManager<HashableState>::InsertState(const HashableState &hashable_state, int state_id) {
+  const auto it = state_to_state_id_.find(hashable_state);
+
+  if (it != state_to_state_id_.end()) {
+    std::ostringstream ss;
+    ss << "Asked to insert an already existent state " << std::endl << hashable_state << std::endl;
+    Print();
+    throw std::runtime_error(ss.str());
+  }
+
+  state_to_state_id_[hashable_state] = state_id;
+  state_id_to_state_[state_id] = hashable_state;
+}
+
+template<class HashableState>
 void HashManager<HashableState>::Reset() {
   state_to_state_id_.clear();
   state_id_to_state_.clear();
@@ -214,9 +235,3 @@ void HashManager<HashableState>::Print() const {
             << std::setw(50)<< "End Hash Table" << std::endl;
 }
 }  // namespace sbpl_utils
-
-
-
-
-
-
