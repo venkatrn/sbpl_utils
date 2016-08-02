@@ -56,7 +56,7 @@ class HasOstreamLShift {
 template < class HashableState,
            typename std::enable_if < !HasOstreamLShift<HashableState>::value,
                                      int >::type = 0 >
-std::ostream &operator<< (std::ostream &stream, const HashableState &state) {
+std::ostream & operator<< (std::ostream &stream, const HashableState &state) {
   stream << "<Hash: " << state.GetHash() << ">";
   return stream;
 }
@@ -64,6 +64,12 @@ std::ostream &operator<< (std::ostream &stream, const HashableState &state) {
 template<class HashableState>
 class HashManager {
  public:
+  struct HashFunction {
+    size_t operator()(const HashableState &hashable_state) const {
+      return hashable_state.GetHash();
+    }
+  };
+
   HashManager();
 
   // Return the number of states in the hash manager.
@@ -97,13 +103,12 @@ class HashManager {
   // Clear the hash manager.
   void Reset();
 
- private:
-  struct HashFunction {
-    size_t operator()(const HashableState &hashable_state) const {
-      return hashable_state.GetHash();
-    }
-  };
+  const std::unordered_map<HashableState, unsigned int, HashFunction>
+  &GetStateMappings() const {
+    return state_to_state_id_;
+  }
 
+ private:
   std::unordered_map<HashableState, unsigned int, HashFunction>
   state_to_state_id_;
   std::unordered_map<unsigned int, HashableState> state_id_to_state_;
@@ -186,7 +191,8 @@ void HashManager<HashableState>::UpdateState(const HashableState
 
   if (it == state_to_state_id_.end()) {
     std::ostringstream ss;
-    ss << "Asked to update a non-existent state " << std::endl << hashable_state << std::endl;
+    ss << "Asked to update a non-existent state " << std::endl << hashable_state <<
+       std::endl;
     Print();
     throw std::runtime_error(ss.str());
   }
@@ -200,12 +206,14 @@ void HashManager<HashableState>::UpdateState(const HashableState
 }
 
 template<class HashableState>
-void HashManager<HashableState>::InsertState(const HashableState &hashable_state, int state_id) {
+void HashManager<HashableState>::InsertState(const HashableState
+                                             &hashable_state, int state_id) {
   const auto it = state_to_state_id_.find(hashable_state);
 
   if (it != state_to_state_id_.end()) {
     std::ostringstream ss;
-    ss << "Asked to insert an already existent state " << std::endl << hashable_state << std::endl;
+    ss << "Asked to insert an already existent state " << std::endl <<
+       hashable_state << std::endl;
     Print();
     throw std::runtime_error(ss.str());
   }
@@ -222,8 +230,8 @@ void HashManager<HashableState>::Reset() {
 
 template<class HashableState>
 void HashManager<HashableState>::Print() const {
-  std::cout << std::right << std::setfill('*') 
-            << std::setw(50)<< "Begin Hash Table" << std::endl;
+  std::cout << std::right << std::setfill('*')
+            << std::setw(50) << "Begin Hash Table" << std::endl;
 
   for (const auto &entry : state_to_state_id_) {
     std::cout << "State ID: " << entry.second << std::endl;
@@ -231,7 +239,7 @@ void HashManager<HashableState>::Print() const {
     std::cout << std::string(10, '-') << std::endl;
   }
 
-  std::cout << std::right << std::setfill('*') 
-            << std::setw(50)<< "End Hash Table" << std::endl;
+  std::cout << std::right << std::setfill('*')
+            << std::setw(50) << "End Hash Table" << std::endl;
 }
 }  // namespace sbpl_utils
