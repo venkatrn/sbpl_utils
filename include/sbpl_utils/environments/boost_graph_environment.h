@@ -91,7 +91,9 @@ class BGEnvironment : public virtual DiscreteSpaceInformation {
   }
   virtual void PrintState(int, bool, FILE *) override {};
   virtual void PrintEnv_Config(FILE *) override {};
- private:
+
+  // Allow derived classes to access these.
+ protected:
   Graph graph_;
   decltype(get(&VertexType::heuristic, graph_)) heuristic_map_;
   decltype(get(&EdgeType::cost, graph_)) edge_cost_map_;
@@ -184,12 +186,16 @@ struct EdgeWithCostAndProbability {
 
 // Typedef for some common graph types.
 // Vertex has heuristic, edges have cost.
-typedef bo::adjacency_list<bo::vecS, bo::vecS, bo::bidirectionalS, VertexWithHeuristic, EdgeWithCost>
+typedef bo::adjacency_list<bo::vecS, bo::vecS, bo::undirectedS, VertexWithHeuristic, EdgeWithCost>
 SimpleGraph;
+typedef bo::adjacency_list<bo::vecS, bo::vecS, bo::bidirectionalS, VertexWithHeuristic, EdgeWithCost>
+SimpleDiGraph;
 
 // Vertex has heuristic, edges have cost, probability of existence and
 // evaluation time.
-typedef bo::adjacency_list<bo::vecS, bo::vecS, bo::bidirectionalS, VertexWithHeuristic, EdgeWithCostAndProbability>
+typedef bo::adjacency_list<bo::vecS, bo::vecS, bo::undirectedS, VertexWithHeuristic, EdgeWithCostAndProbability>
 StochasticGraph;
+typedef bo::adjacency_list<bo::vecS, bo::vecS, bo::bidirectionalS, VertexWithHeuristic, EdgeWithCostAndProbability>
+StochasticDiGraph;
 
 } // namespace sbpl_utils

@@ -202,7 +202,8 @@ void HashManager<HashableState>::UpdateState(const HashableState
   state_to_state_id_.erase(it);
   state_to_state_id_[hashable_state] = old_state_id;
 
-  state_id_to_state_[old_state_id] = hashable_state;
+  auto state_id_to_state_iterator = state_id_to_state_.find(old_state_id);
+  state_id_to_state_iterator->second = hashable_state;
 }
 
 template<class HashableState>
@@ -219,7 +220,7 @@ void HashManager<HashableState>::InsertState(const HashableState
   }
 
   state_to_state_id_[hashable_state] = state_id;
-  state_id_to_state_[state_id] = hashable_state;
+  state_id_to_state_.insert(std::make_pair(state_id, hashable_state));
 }
 
 template<class HashableState>
